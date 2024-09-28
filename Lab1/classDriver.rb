@@ -71,6 +71,22 @@ class Driver
 
 end
 
+# Класс с краткой информацией
+class DriverShort
+  attr_reader :last_name, :initials
+
+  # Конструктор, принимающий объект класса Driver
+  def initialize(driver)
+    @last_name = driver.last_name
+    @initials = "#{driver.first_name[0]}.#{driver.middle_name[0]}."
+  end
+
+  # Метод для отображения краткой информации
+  def info
+    "#{last_name} #{initials}"
+  end
+end
+
 # Пример
 begin
   driver1 = Driver.create_driver(1, "Иванов", "Иван", "Иванович", 10)
@@ -84,6 +100,10 @@ begin
   # Сравнение объектов
   puts "Сравнение driver1 и driver2: #{Driver.compare_objects(driver1, driver2)}" # false
   puts "Сравнение driver1 и driver3: #{Driver.compare_objects(driver1, driver3)}" # true
+
+  # Краткий класс
+  driver_short = DriverShort.new(driver1)
+  puts driver_short.info 
 rescue => e
   puts "Ошибка: #{e.message}"
 end
