@@ -48,17 +48,42 @@ class Driver
   def experience=(experience)
     @experience = validate_experience(experience)
   end
-
-  # Метод Информация о водителе
+  
+  #Методы
+  # Полная информация о водителе
   def info
-    "Водитель: #{last_name} #{first_name} #{middle_name}, Стаж: #{experience} лет"
+    "Полная информация: Водитель: #{last_name} #{first_name} #{middle_name}, Стаж: #{experience} лет, ID: #{id}"
   end
+  
+  # Краткая информация о водителе
+  def short_info
+    "Краткая информация: Водитель: #{last_name} #{first_name[0]}.#{middle_name[0]}."
+  end
+
+  # Метод для сравнения двух объектов Driver
+  def self.compare_objects(obj1, obj2)
+    obj1.id == obj2.id &&
+    obj1.last_name == obj2.last_name &&
+    obj1.first_name == obj2.first_name &&
+    obj1.middle_name == obj2.middle_name &&
+    obj1.experience == obj2.experience
+  end
+
 end
 
 # Пример
 begin
-  driver = Driver.create_driver(1, "Иванов", "Иван", "Иванович", 10)
-  puts driver.info
+  driver1 = Driver.create_driver(1, "Иванов", "Иван", "Иванович", 10)
+  driver2 = Driver.create_driver(2, "Петров", "Петр", "Петрович", 8)
+  driver3 = Driver.create_driver(1, "Иванов", "Иван", "Иванович", 10)
+  
+  # Полная и краткая версия информации
+  puts driver1.info
+  puts driver1.short_info
+  
+  # Сравнение объектов
+  puts "Сравнение driver1 и driver2: #{Driver.compare_objects(driver1, driver2)}" # false
+  puts "Сравнение driver1 и driver3: #{Driver.compare_objects(driver1, driver3)}" # true
 rescue => e
   puts "Ошибка: #{e.message}"
 end
