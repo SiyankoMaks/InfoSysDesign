@@ -71,21 +71,19 @@ class Driver
 
 end
 
-# Класс с краткой информацией
-class DriverShort
-  attr_reader :last_name, :initials
-
-  # Конструктор, принимающий объект класса Driver
+# Класс DriverShort, который наследуется от Driver
+class DriverShort < Driver
+  # Конструктор
   def initialize(driver)
-    @last_name = driver.last_name
-    @initials = "#{driver.first_name[0]}.#{driver.middle_name[0]}."
+    super(driver.id, driver.last_name, driver.first_name, driver.middle_name, driver.experience)
   end
 
-  # Метод для отображения краткой информации
+  # Метод для краткой версии
   def info
-    "#{last_name} #{initials}"
+    "#{short_info}"
   end
 end
+
 
 # Пример
 begin
