@@ -1,6 +1,7 @@
 package Lab1;
 import java.util.Objects;
 
+// Класс Driver
 public class Driver {
     // Поля класса (инкапсуляция)
     private String lastName;
@@ -103,19 +104,39 @@ public class Driver {
             // Создание объектов
             Driver driver1 = new Driver("Иванов", "Иван", "Иванович", 10);
             Driver driver2 = new Driver("Петров", "Петр", "Петрович", 5);
-            Driver driver3 = new Driver("Иванов", "Иван", "Иванович", 10);
 
-            // Полная информация о водителе
+            // Создание краткой версии объекта driver1
+            DriverShortInfo shortInfo1 = new DriverShortInfo(driver1);
+
+            // Полная информация
             System.out.println("Полная версия объекта driver1: " + driver1.toString());
-            // Краткая информация о водителе
-            System.out.println("Краткая версия объекта driver1: " + driver1.shortInfo());
+
+            // Краткая информация
+            System.out.println("Краткая версия объекта driver1: " + shortInfo1.toString());
 
             // Сравнение объектов
             System.out.println("driver1 равен driver2? " + driver1.equals(driver2));
-            System.out.println("driver1 равен driver3? " + driver1.equals(driver3));
 
         } catch (IllegalArgumentException e) {
             System.out.println("Ошибка: " + e.getMessage());
         }
+    }
+}
+
+// Краткая версия класса Driver
+class DriverShortInfo {
+    private String lastName;
+    private String initials;
+
+    // Конструктор
+    public DriverShortInfo(Driver driver) {
+        this.lastName = driver.getLastName();
+        this.initials = driver.getFirstName().charAt(0) + "." + driver.getMiddleName().charAt(0) + ".";
+    }
+
+    // Переопределение метода toString
+    @Override
+    public String toString() {
+        return lastName + " " + initials;
     }
 }
