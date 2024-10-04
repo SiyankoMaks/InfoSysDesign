@@ -7,25 +7,12 @@ public class Driver {
 
     // Конструктор
     public Driver(String lastName, String firstName, String middleName, int experience) {
-        // Проверка валидности полей
-        if (validateLastName(lastName)) {
-            this.lastName = lastName;
-        } else {
-            throw new IllegalArgumentException("Фамилия не может быть пустой.");
-        }
+        // Используем общий метод для валидации строковых полей
+        this.lastName = validateAndSetField(lastName, "Фамилия");
+        this.firstName = validateAndSetField(firstName, "Имя");
+        this.middleName = validateAndSetField(middleName, "Отчество");
 
-        if (validateFirstName(firstName)) {
-            this.firstName = firstName;
-        } else {
-            throw new IllegalArgumentException("Имя не может быть пустым.");
-        }
-
-        if (validateMiddleName(middleName)) {
-            this.middleName = middleName;
-        } else {
-            throw new IllegalArgumentException("Отчество не может быть пустым.");
-        }
-
+        // Валидация опыта
         if (validateExperience(experience)) {
             this.experience = experience;
         } else {
@@ -52,27 +39,15 @@ public class Driver {
 
     // Сеттеры
     public void setLastName(String lastName) {
-        if (validateLastName(lastName)) {
-            this.lastName = lastName;
-        } else {
-            throw new IllegalArgumentException("Фамилия не может быть пустой.");
-        }
+        this.lastName = validateAndSetField(lastName, "Фамилия");
     }
 
     public void setFirstName(String firstName) {
-        if (validateFirstName(firstName)) {
-            this.firstName = firstName;
-        } else {
-            throw new IllegalArgumentException("Имя не может быть пустым.");
-        }
+        this.firstName = validateAndSetField(firstName, "Имя");
     }
 
     public void setMiddleName(String middleName) {
-        if (validateMiddleName(middleName)) {
-            this.middleName = middleName;
-        } else {
-            throw new IllegalArgumentException("Отчество не может быть пустым.");
-        }
+        this.middleName = validateAndSetField(middleName, "Отчество");
     }
 
     public void setExperience(int experience) {
@@ -83,29 +58,27 @@ public class Driver {
         }
     }
 
-    // Статические методы валидации
-    public static boolean validateLastName(String lastName) {
-        return lastName != null && !lastName.trim().isEmpty();
+    // Методы
+    // Общий метод для валидации строк
+    public static String validateAndSetField(String value, String fieldName) {
+        if (value != null && !value.trim().isEmpty()) {
+            return value;
+        } else {
+            throw new IllegalArgumentException(fieldName + " не может быть пустым.");
+        }
     }
 
-    public static boolean validateFirstName(String firstName) {
-        return firstName != null && !firstName.trim().isEmpty();
-    }
-
-    public static boolean validateMiddleName(String middleName) {
-        return middleName != null && !middleName.trim().isEmpty();
-    }
-
+    // Стаж
     public static boolean validateExperience(int experience) {
         return experience >= 0;
     }
 
-    // Методы
+    // Информация о водителе
     public String info() {
         return "Водитель: " + lastName + " " + firstName + " " + middleName + ", Стаж: " + experience + " лет.";
     }
 
-    // Примеры
+    // Примеры использования
     public static void main(String[] args) {
         try {
             // Хороший пример
