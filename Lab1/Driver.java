@@ -1,3 +1,6 @@
+package Lab1;
+import java.util.Objects;
+
 public class Driver {
     // Поля класса (инкапсуляция)
     private String lastName;
@@ -58,8 +61,7 @@ public class Driver {
         }
     }
 
-    // Методы
-    // Общий метод для валидации строк
+    // Методы для валидации
     public static String validateAndSetField(String value, String fieldName) {
         if (value != null && !value.trim().isEmpty()) {
             return value;
@@ -68,25 +70,50 @@ public class Driver {
         }
     }
 
-    // Стаж
     public static boolean validateExperience(int experience) {
         return experience >= 0;
     }
 
-    // Информация о водителе
-    public String info() {
+    // Переопределение метода toString
+    @Override
+    public String toString() {
         return "Водитель: " + lastName + " " + firstName + " " + middleName + ", Стаж: " + experience + " лет.";
+    }
+
+    // Метод для краткой версии объекта (только фамилия и имя)
+    public String shortInfo() {
+        return "Водитель: " + lastName + " " + firstName;
+    }
+
+    // Переопределение метода equals для сравнения объектов
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Driver driver = (Driver) o;
+        return experience == driver.experience &&
+                Objects.equals(lastName, driver.lastName) &&
+                Objects.equals(firstName, driver.firstName) &&
+                Objects.equals(middleName, driver.middleName);
     }
 
     // Примеры использования
     public static void main(String[] args) {
         try {
-            // Хороший пример
-            Driver driver = new Driver("Иванов", "Иван", "Иванович", 10);
-            System.out.println(driver.info());
+            // Создание объектов
+            Driver driver1 = new Driver("Иванов", "Иван", "Иванович", 10);
+            Driver driver2 = new Driver("Петров", "Петр", "Петрович", 5);
+            Driver driver3 = new Driver("Иванов", "Иван", "Иванович", 10);
 
-            // Плохой пример
-            Driver invalidDriver = new Driver("", "Иван", "Иванович", -5);
+            // Полная информация о водителе
+            System.out.println("Полная версия объекта driver1: " + driver1.toString());
+            // Краткая информация о водителе
+            System.out.println("Краткая версия объекта driver1: " + driver1.shortInfo());
+
+            // Сравнение объектов
+            System.out.println("driver1 равен driver2? " + driver1.equals(driver2));
+            System.out.println("driver1 равен driver3? " + driver1.equals(driver3));
+
         } catch (IllegalArgumentException e) {
             System.out.println("Ошибка: " + e.getMessage());
         }
