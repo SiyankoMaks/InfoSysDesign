@@ -4,57 +4,17 @@ import java.util.Objects;
 // Класс Driver
 public class Driver {
     // Поля класса (инкапсуляция)
-    private String lastName;
-    private String firstName;
-    private String middleName;
-    private int experience;
+    protected String lastName;
+    protected String firstName;
+    protected String middleName;
+    protected int experience;
 
     // Конструктор
     public Driver(String lastName, String firstName, String middleName, int experience) {
-        // Используем общий метод для валидации строковых полей
         this.lastName = validateAndSetField(lastName, "Фамилия");
         this.firstName = validateAndSetField(firstName, "Имя");
         this.middleName = validateAndSetField(middleName, "Отчество");
 
-        // Валидация опыта
-        if (validateExperience(experience)) {
-            this.experience = experience;
-        } else {
-            throw new IllegalArgumentException("Стаж не может быть отрицательным.");
-        }
-    }
-
-    // Геттеры
-    public String getLastName() {
-        return lastName;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getMiddleName() {
-        return middleName;
-    }
-
-    public int getExperience() {
-        return experience;
-    }
-
-    // Сеттеры
-    public void setLastName(String lastName) {
-        this.lastName = validateAndSetField(lastName, "Фамилия");
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = validateAndSetField(firstName, "Имя");
-    }
-
-    public void setMiddleName(String middleName) {
-        this.middleName = validateAndSetField(middleName, "Отчество");
-    }
-
-    public void setExperience(int experience) {
         if (validateExperience(experience)) {
             this.experience = experience;
         } else {
@@ -75,68 +35,63 @@ public class Driver {
         return experience >= 0;
     }
 
-    // Переопределение метода toString
+    // Переопределение метода toString для полной информации
     @Override
     public String toString() {
         return "Водитель: " + lastName + " " + firstName + " " + middleName + ", Стаж: " + experience + " лет.";
     }
 
-    // Метод для краткой версии объекта (только фамилия и имя)
-    public String shortInfo() {
-        return "Водитель: " + lastName + " " + firstName;
-    }
-
-    // Переопределение метода equals для сравнения объектов
+    // Переопределение метода equals для сравнения объектов Driver
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Driver driver = (Driver) o;
         return experience == driver.experience &&
-                Objects.equals(lastName, driver.lastName) &&
-                Objects.equals(firstName, driver.firstName) &&
-                Objects.equals(middleName, driver.middleName);
-    }
-
-    // Примеры использования
-    public static void main(String[] args) {
-        try {
-            // Создание объектов
-            Driver driver1 = new Driver("Иванов", "Иван", "Иванович", 10);
-            Driver driver2 = new Driver("Петров", "Петр", "Петрович", 5);
-
-            // Создание краткой версии объекта driver1
-            DriverShortInfo shortInfo1 = new DriverShortInfo(driver1);
-
-            // Полная информация
-            System.out.println("Полная версия объекта driver1: " + driver1.toString());
-
-            // Краткая информация
-            System.out.println("Краткая версия объекта driver1: " + shortInfo1.toString());
-
-            // Сравнение объектов
-            System.out.println("driver1 равен driver2? " + driver1.equals(driver2));
-
-        } catch (IllegalArgumentException e) {
-            System.out.println("Ошибка: " + e.getMessage());
-        }
+                lastName.equals(driver.lastName) &&
+                firstName.equals(driver.firstName) &&
+                middleName.equals(driver.middleName);
     }
 }
 
-// Краткая версия класса Driver
-class DriverShortInfo {
-    private String lastName;
-    private String initials;
+// Класс DriverShortInfo, наследующий Driver
+class DriverShortInfo extends Driver {
 
     // Конструктор
     public DriverShortInfo(Driver driver) {
-        this.lastName = driver.getLastName();
-        this.initials = driver.getFirstName().charAt(0) + "." + driver.getMiddleName().charAt(0) + ".";
+        // Вызов конструктора класса Driver
+        super(driver.lastName, driver.firstName, driver.middleName, driver.experience);
     }
 
-    // Переопределение метода toString
+    // Переопределение метода toString для краткой информации
     @Override
     public String toString() {
-        return lastName + " " + initials;
+        return lastName + " " + firstName.charAt(0) + "." + middleName.charAt(0) + ".";
     }
 }
+
+// // Примеры использования
+// public class Main {
+//     public static void main(String[] args) {
+//         try {
+//             // Создание объектов
+//             Driver driver1 = new Driver("Иванов", "Иван", "Иванович", 10);
+//             Driver driver2 = new Driver("Петров", "Петр", "Петрович", 5);
+
+//             // Создание краткой версии объекта driver1
+//             DriverShortInfo shortInfo1 = new DriverShortInfo(driver1);
+
+//             // Полная информация
+//             System.out.println("Полная версия объекта driver1: " + driver1.toString());
+
+//             // Краткая информация
+//             System.out.println("Краткая версия объекта driver1: " + shortInfo1.toString());
+
+//             // Сравнение объектов
+//             System.out.println("driver1 равен driver2? " + driver1.equals(driver2));
+
+//         } catch (IllegalArgumentException e) {
+//             System.out.println("Ошибка: " + e.getMessage());
+//         }
+//     }
+// }
