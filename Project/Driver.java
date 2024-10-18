@@ -63,7 +63,7 @@ public class Driver {
     }
 
     // Методы для валидации
-    private String validateAndSetField(String value, String fieldName) {
+    public static String validateAndSetField(String value, String fieldName) {
         if (value != null && !value.trim().isEmpty()) {
             return value;
         } else {
@@ -71,7 +71,7 @@ public class Driver {
         }
     }
 
-    private boolean validateExperience(int experience) {
+    public static boolean validateExperience(int experience) {
         return experience >= 0;
     }
 
@@ -79,55 +79,40 @@ public class Driver {
     public String getLastName() {
         return lastName;
     }
-
-    public void setLastName(String lastName) {
-        this.lastName = validateAndSetField(lastName, "Фамилия");
-    }
-
     public String getFirstName() {
         return firstName;
     }
-
-    public void setFirstName(String firstName) {
-        this.firstName = validateAndSetField(firstName, "Имя");
-    }
-
     public String getMiddleName() {
         return middleName;
     }
-
-    public void setMiddleName(String middleName) {
-        this.middleName = validateAndSetField(middleName, "Отчество");
-    }
-
     public String getDriverLicense() {
         return driverLicense;
     }
-
-    public void setDriverLicense(String driverLicense) {
-        this.driverLicense = validateAndSetField(driverLicense, "Водительское удостоверение");
-    }
-
     public String getVehicleLicense() {
         return vehicleLicense;
     }
-
-    public void setVehicleLicense(String vehicleLicense) {
-        this.vehicleLicense = validateAndSetField(vehicleLicense, "Паспорт транспортного средства");
-    }
-
-    public String getInsurancePolicy() {
-        return insurancePolicy;
-    }
-
-    public void setInsurancePolicy(String insurancePolicy) {
-        this.insurancePolicy = validateAndSetField(insurancePolicy, "Страховка автомобиля");
-    }
-
     public int getExperience() {
         return experience;
     }
 
+    public void setLastName(String lastName) {
+        this.lastName = validateAndSetField(lastName, "Фамилия");
+    }
+    public void setFirstName(String firstName) {
+        this.firstName = validateAndSetField(firstName, "Имя");
+    }
+    public void setMiddleName(String middleName) {
+        this.middleName = validateAndSetField(middleName, "Отчество");
+    }
+    public void setDriverLicense(String driverLicense) {
+        this.driverLicense = validateAndSetField(driverLicense, "Водительское удостоверение");
+    }
+    public void setVehicleLicense(String vehicleLicense) {
+        this.vehicleLicense = validateAndSetField(vehicleLicense, "Паспорт транспортного средства");
+    }
+    public void setInsurancePolicy(String insurancePolicy) {
+        this.insurancePolicy = validateAndSetField(insurancePolicy, "Страховка автомобиля");
+    }
     public void setExperience(int experience) {
         if (validateExperience(experience)) {
             this.experience = experience;
