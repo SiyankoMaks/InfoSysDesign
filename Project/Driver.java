@@ -146,12 +146,6 @@ public class Driver {
                ", Стаж: " + experience + " лет.";
     }
 
-    // Метод для получения краткой информации
-    public String getShortInfo() {
-        return lastName + " " + firstName.charAt(0) + "." + middleName.charAt(0) + ". " +
-               "ПТС: " + vehicleLicense;
-    }
-
     // Переопределение метода equals для сравнения объектов Driver
     @Override
     public boolean equals(Object o) {
@@ -170,14 +164,18 @@ public class Driver {
     // Пример
     public static void main(String[] args) {
 
-        Driver driver = new Driver("Иванов", "Иван", "Иванович", 
-        "123456", "654321", "987654", 10);
+        // Взаимодействие с наследуемым классом
+        DriverShort driverShort = new DriverShort("Петров", "Петр", "Петрович", "654321", "123456", "567890", 5);
+        System.out.println(driverShort.toString());
 
-        // Полная версия
-        System.out.println("Полная версия: " + driver.toString());
+        // Driver driver = new Driver("Иванов", "Иван", "Иванович", 
+        // "123456", "654321", "987654", 10);
 
-        // Краткая версия
-        System.out.println("Краткая версия: " + driver.getShortInfo());
+        // // Полная версия
+        // System.out.println("Полная версия: " + driver.toString());
+
+        // // Краткая версия
+        // System.out.println("Краткая версия: " + driver.getShortInfo());
         
         // String jsonString = "{ \"lastName\": \"Иванов\", \"firstName\": \"Иван\", \"middleName\": \"Иванович\", \"driverLicense\": \"123456\", \"vehicleLicense\": \"654321\", \"insurancePolicy\": \"987654\", \"experience\": 10 }";
         // JSONObject jsonObject = new JSONObject(jsonString);
