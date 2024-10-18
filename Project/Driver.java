@@ -1,5 +1,7 @@
 package Project;
 
+import org.json.JSONObject;
+
 // Класс Driver
 public class Driver {
     // Поля класса (инкапсуляция)
@@ -42,6 +44,21 @@ public class Driver {
             setExperience(Integer.parseInt(fields[6].trim()));
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException("Неверный формат стажа.");
+        }
+    }
+
+    // Перегруженный конструктор для создания объекта из JSON
+    public Driver(JSONObject json) {
+        setLastName(json.optString("lastName"));
+        setFirstName(json.optString("firstName"));
+        setMiddleName(json.optString("middleName"));
+        setDriverLicense(json.optString("driverLicense"));
+        setVehicleLicense(json.optString("vehicleLicense"));
+        setInsurancePolicy(json.optString("insurancePolicy"));
+        setExperience(json.optInt("experience", -1));
+
+        if (!json.has("experience") || json.getInt("experience") < 0) {
+            throw new IllegalArgumentException("Неверный формат стажа в JSON.");
         }
     }
 
@@ -119,18 +136,17 @@ public class Driver {
         }
     }
 
-    // // Переопределение метода toString для полной информации
-    // @Override
-    // public String toString() {
-    //     return "Водитель: " + lastName + " " + firstName + " " + middleName + 
-    //            ", Водительское удостоверение: " + driverLicense + 
-    //            ", ПТС: " + vehicleLicense + 
-    //            ", Страховка: " + insurancePolicy + 
-    //            ", Стаж: " + experience + " лет.";
-    // }
+    // Переопределение метода toString для полной информации
+    @Override
+    public String toString() {
+        return "Водитель: " + lastName + " " + firstName + " " + middleName + 
+               ", Водительское удостоверение: " + driverLicense + 
+               ", ПТС: " + vehicleLicense + 
+               ", Страховка: " + insurancePolicy + 
+               ", Стаж: " + experience + " лет.";
+    }
 
     // Переопределение метода equals для сравнения объектов Driver
-    // Закомментировано согласно требованиям
     /*
     @Override
     public boolean equals(Object o) {
@@ -146,30 +162,15 @@ public class Driver {
                 insurancePolicy.equals(driver.insurancePolicy);
     }
     */
-// // Примеры использования
-// public class Main {
-//     public static void main(String[] args) {
-//         try {
-//             // Создание объектов
-//             Driver driver1 = new Driver("Иванов", "Иван", "Иванович", 10);
-//             Driver driver2 = new Driver("Петров", "Петр", "Петрович", 5);
+// Пример
 
-            // // CSV
-            // Driver csvDriver = new Driver("Петров,Петр,Петрович,5");
-            // System.out.println(csvDriver.info());
-
-//             // Создание краткой версии объекта driver1
-//             DriverShortInfo shortInfo1 = new DriverShortInfo(driver1);
-
-//             // Полная информация
-//             System.out.println("Полная версия объекта driver1: " + driver1.toString());
-
-//             // Сравнение объектов
-//             System.out.println("driver1 равен driver2? " + driver1.equals(driver2));
-
-//         } catch (IllegalArgumentException e) {
-//             System.out.println("Ошибка: " + e.getMessage());
-//         }
-//     }
-// }
+    public static void main(String[] args) {
+        // String jsonString = "{ \"lastName\": \"Иванов\", \"firstName\": \"Иван\", \"middleName\": \"Иванович\", \"driverLicense\": \"123456\", \"vehicleLicense\": \"654321\", \"insurancePolicy\": \"987654\", \"experience\": 10 }";
+        // JSONObject jsonObject = new JSONObject(jsonString);
+    
+        // Driver driverFromJson = new Driver(jsonObject);
+        // System.out.println(driverFromJson.toString());
+    }
 }
+
+
