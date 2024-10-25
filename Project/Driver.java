@@ -86,6 +86,15 @@ public class Driver extends DriverShort {
         return insurancePolicy != null && insurancePolicy.matches("[A-Z]{3}\\d{10}");
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true; // Проверка на сравнение с самим собой
+        if (obj == null || getClass() != obj.getClass()) return false; // Проверка на null и совпадение классов
+    
+        Driver driver = (Driver) obj; // Приведение типа для доступа к полю driverLicense
+        return driverLicense != null && driverLicense.equals(driver.driverLicense); // Сравнение водительских удостоверений
+    }
+
     // Метод вывода полной информации
     @Override
     public String toString() {
