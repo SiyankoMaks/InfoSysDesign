@@ -4,7 +4,7 @@ import org.json.JSONObject;
 
 public class Driver extends DriverShort {
 
-    private String driverLicense;      // Водительское удостоверение
+    private String vehicleLicense;     // ПТС
     private String insurancePolicy;    // Страховка автомобиля
     private int experience;
 
@@ -12,8 +12,17 @@ public class Driver extends DriverShort {
     public Driver(String lastName, String firstName, String middleName,
                   String driverLicense, String vehicleLicense,
                   String insurancePolicy, int experience) {
-        super(lastName, firstName, middleName, vehicleLicense);
-        setDriverLicense(driverLicense);
+        super(lastName, firstName, middleName, driverLicense);
+        setVehicleLicense(vehicleLicense);
+        setInsurancePolicy(insurancePolicy);
+        setExperience(experience);
+    }
+
+    public Driver(Integer id, String lastName, String firstName, String middleName,
+                  String driverLicense, String vehicleLicense,
+                  String insurancePolicy, int experience) {
+        this(lastName, firstName, middleName, driverLicense, vehicleLicense, insurancePolicy, experience);
+        setVehicleLicense(vehicleLicense);
         setInsurancePolicy(insurancePolicy);
         setExperience(experience);
     }
@@ -37,23 +46,24 @@ public class Driver extends DriverShort {
 
     // Конструктор из JSON
     public Driver(JSONObject json) {
-        super(json.optString("lastName"), json.optString("firstName"),
-              json.optString("middleName"), json.optString("vehicleLicense"));
-        setDriverLicense(json.optString("driverLicense"));
+        super(json.optInt("id", -1), json.optString("lastName"),
+              json.optString("firstName"), json.optString("middleName"),
+              json.optString("driverLicense"));
+        setVehicleLicense(json.optString("vehicleLicense"));
         setInsurancePolicy(json.optString("insurancePolicy"));
         setExperience(json.optInt("experience", -1));
     }
 
     // Геттеры и сеттеры с проверками
-    public String getDriverLicense() { return driverLicense; }
+    public String getVehicleLicense() { return vehicleLicense; }
     public String getInsurancePolicy() { return insurancePolicy; }
     public int getExperience() { return experience; }
 
-    public void setDriverLicense(String driverLicense) {
-        if (validateDriverLicense(driverLicense)) {
-            this.driverLicense = driverLicense;
+    public void setVehicleLicense(String vehicleLicense) {
+        if (validateVehicleLicense(vehicleLicense)) {
+            this.vehicleLicense = vehicleLicense;
         } else {
-            throw new IllegalArgumentException("Водительское удостоверение должно содержать 10 цифр.");
+            throw new IllegalArgumentException("ПТС должен иметь формат: 2 цифры, 2 буквы, 6 цифр.");
         }
     }
 
@@ -73,33 +83,35 @@ public class Driver extends DriverShort {
         }
     }
 
-    // Методы валидации для уникальных полей Driver
-    public static boolean validateExperience(int experience) {
-        return experience >= 0;
+    // Валидация ПТС (2 цифры, 2 буквы, 6 цифр)
+    public static boolean validateVehicleLicense(String vehicleLicense) {
+        return vehicleLicense != null && vehicleLicense.matches("\\d{2}[A-Z]{2}\\d{6}");
     }
 
-    public static boolean validateDriverLicense(String driverLicense) {
-        return driverLicense != null && driverLicense.matches("\\d{10}");
+    // Валидация стажа
+    public static boolean validateExperience(int experience) {
+        return experience >= 0;
     }
 
     public static boolean validateInsurancePolicy(String insurancePolicy) {
         return insurancePolicy != null && insurancePolicy.matches("[A-Z]{3}\\d{10}");
     }
 
+    // Переопределение метода equals
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true; // Проверка на сравнение с самим собой
-        if (obj == null || getClass() != obj.getClass()) return false; // Проверка на null и совпадение классов
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
     
-        Driver driver = (Driver) obj; // Приведение типа для доступа к полю driverLicense
-        return driverLicense != null && driverLicense.equals(driver.driverLicense); // Сравнение водительских удостоверений
-    }
+        Driver driver = (Driver) obj;
+        return getDriverLicense() != null && getDriverLicense().equals(driver.getDriverLicense());
+    }    
 
     // Метод вывода полной информации
     @Override
     public String toString() {
         return super.toString() +
-               ", Водительское удостоверение: " + driverLicense +
+               ", ПТС: " + vehicleLicense +
                ", Страховка: " + insurancePolicy +
                ", Стаж: " + experience + " лет.";
     }
