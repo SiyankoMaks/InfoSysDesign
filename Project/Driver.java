@@ -1,6 +1,11 @@
 package Project;
 
+import java.io.StringWriter;
+import java.util.Map;
+
 import org.json.JSONObject;
+
+import org.yaml.snakeyaml.Yaml;
 
 public class Driver extends DriverShort {
 
@@ -66,6 +71,43 @@ public class Driver extends DriverShort {
         jsonDriver.put("insurancePolicy", getInsurancePolicy());
         jsonDriver.put("experience", getExperience());
         return jsonDriver;
+    }
+
+    // Конструктор из YAML
+    public static Driver fromYaml(String yamlString) {
+        Yaml yaml = new Yaml();
+        Map<String, Object> data = yaml.load(yamlString);
+        return new Driver(
+                (String) data.get("lastName"),
+                (String) data.get("firstName"),
+                (String) data.get("middleName"),
+                (String) data.get("driverLicense"),
+                (String) data.get("vehicleLicense"),
+                (String) data.get("insurancePolicy"),
+                (int) data.get("experience")
+        );
+    }
+
+    // Метод toYaml для преобразования объекта в YAML
+    public String toYaml() {
+        Yaml yaml = new Yaml();
+        StringWriter writer = new StringWriter();
+        yaml.dump(this.toMap(), writer);
+        return writer.toString();
+    }
+
+    // Преобразование полей Driver в Map для удобства использования в toYaml
+    private Map<String, Object> toMap() {
+        return Map.of(
+                "id", getId(),
+                "lastName", getLastName(),
+                "firstName", getFirstName(),
+                "middleName", getMiddleName(),
+                "driverLicense", getDriverLicense(),
+                "vehicleLicense", getVehicleLicense(),
+                "insurancePolicy", getInsurancePolicy(),
+                "experience", getExperience()
+        );
     }
 
     // Геттеры и сеттеры с проверками
