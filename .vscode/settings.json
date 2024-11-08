@@ -1,6 +1,7 @@
 {
     "java.project.referencedLibraries": [
         "lib/**/*.jar",
-        "Project/lib/json-20240303.jar"
+        "Project/lib/json-20240303.jar",
+        "Project/lib/snakeyaml-2.3.jar"
     ]
 }
