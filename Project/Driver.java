@@ -54,6 +54,20 @@ public class Driver extends DriverShort {
         setExperience(json.optInt("experience", -1));
     }
 
+    // Метод toJson для преобразования объекта в JSONObject
+    public JSONObject toJson() {
+        JSONObject jsonDriver = new JSONObject();
+        jsonDriver.put("id", getId());
+        jsonDriver.put("lastName", getLastName());
+        jsonDriver.put("firstName", getFirstName());
+        jsonDriver.put("middleName", getMiddleName());
+        jsonDriver.put("driverLicense", getDriverLicense());
+        jsonDriver.put("vehicleLicense", getVehicleLicense());
+        jsonDriver.put("insurancePolicy", getInsurancePolicy());
+        jsonDriver.put("experience", getExperience());
+        return jsonDriver;
+    }
+
     // Геттеры и сеттеры с проверками
     public String getVehicleLicense() { return vehicleLicense; }
     public String getInsurancePolicy() { return insurancePolicy; }
