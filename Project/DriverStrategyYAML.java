@@ -5,20 +5,17 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.List;
 
-public class DriverRepYAML extends DriverRep {
-
+public class DriverStrategyYAML implements DriverStrategy {
     private final String yamlFilePath;
 
-    // Конструктор
-    public DriverRepYAML(String yamlFilePath) {
+    public DriverStrategyYAML(String yamlFilePath) {
         this.yamlFilePath = yamlFilePath;
-        readAllValues();  // Чтение
     }
 
-    // Чтение
     @Override
-    public void readAllValues() {
+    public void readAllValues(List<Driver> drivers) {
         drivers.clear();
         try {
             String content = new String(Files.readAllBytes(Paths.get(yamlFilePath)));
@@ -34,9 +31,8 @@ public class DriverRepYAML extends DriverRep {
         }
     }
 
-    // Запись
     @Override
-    public void writeAllValues() {
+    public void writeAllValues(List<Driver> drivers) {
         try (FileWriter writer = new FileWriter(yamlFilePath)) {
             for (Driver driver : drivers) {
                 writer.write(driver.toYaml());

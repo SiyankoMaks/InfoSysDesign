@@ -5,20 +5,17 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.List;
 
-public class DriverRepJSON extends DriverRep {
-
+public class DriverStrategyJSON implements DriverStrategy {
     private final String jsonFilePath;
 
-    // Конструктор
-    public DriverRepJSON(String jsonFilePath) {
+    public DriverStrategyJSON(String jsonFilePath) {
         this.jsonFilePath = jsonFilePath;
-        readAllValues();  // Чтение
     }
 
-    // Чтение 
     @Override
-    public void readAllValues() {
+    public void readAllValues(List<Driver> drivers) {
         drivers.clear();
         try {
             String content = new String(Files.readAllBytes(Paths.get(jsonFilePath)));
@@ -31,9 +28,8 @@ public class DriverRepJSON extends DriverRep {
         }
     }
 
-    // Запись
     @Override
-    public void writeAllValues() {
+    public void writeAllValues(List<Driver> drivers) {
         try (FileWriter file = new FileWriter(jsonFilePath)) {
             JSONArray jsonArray = new JSONArray();
             for (Driver driver : drivers) {

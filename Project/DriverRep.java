@@ -6,11 +6,28 @@ import java.util.List;
 
 public abstract class DriverRep {
 
-    protected List<Driver> drivers = new ArrayList<>();
+    private final List<Driver> drivers = new ArrayList<>();
+    private DriverStrategy strategy;
 
-    // Абстрактные методы для чтения и записи
-    public abstract void readAllValues();
-    public abstract void writeAllValues();
+    // Метод установки стратегии
+    public void setStrategy(DriverStrategy strategy) {
+        this.strategy = strategy;
+        readAllValues();
+    }
+
+    // Чтение
+    public void readAllValues() {
+        if (strategy != null) {
+            strategy.readAllValues(drivers);
+        }
+    }
+
+    // Запись
+    public void writeAllValues() {
+        if (strategy != null) {
+            strategy.writeAllValues(drivers);
+        }
+    }
 
     // Метод получения объекта по ID
     public Driver getObjectById(int id) {
@@ -36,14 +53,11 @@ public abstract class DriverRep {
 
     // Метод добавления объекта в список с автоматическим назначением ID
     public void addDriver(Driver driver) {
-        int newId = getNewId();
+        int newId = drivers.stream().mapToInt(Driver::getId).max().orElse(0) + 1;
         driver.setId(newId);
+        driver.equals(driver);
         drivers.add(driver);
         writeAllValues();
-    }
-
-    private int getNewId() {
-        return drivers.stream().mapToInt(Driver::getId).max().orElse(0) + 1;
     }
 
     // Метод замены элемента списка по ID
@@ -51,6 +65,7 @@ public abstract class DriverRep {
         for (int i = 0; i < drivers.size(); i++) {
             if (drivers.get(i).getId() == id) {
                 newDriver.setId(id);
+                newDriver.equals(newDriver);
                 drivers.set(i, newDriver);
                 writeAllValues();
                 break;
