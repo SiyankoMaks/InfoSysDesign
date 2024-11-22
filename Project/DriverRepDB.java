@@ -5,8 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DriverRepDB {
-
-    private final DBConnection dbConnection;
+    private final DBConnection dbConnection; // Делегация для БД
     private final String TABLE_NAME = "drivers";
 
     public DriverRepDB(DBConnection dbConnection) {
@@ -14,7 +13,58 @@ public class DriverRepDB {
     }
 
     private Connection getConnection() throws SQLException {
-        return dbConnection.getConnection();
+        return dbConnection.getConnection(); // Делегация к DBConnection
+    }
+
+    // Метод для создания таблицы, если она не существует
+    private void createTableIfNotExists() {
+        String createTableSQL = String.format(
+                "CREATE TABLE IF NOT EXISTS %s (" +
+                        "id SERIAL PRIMARY KEY, " +
+                        "lastName VARCHAR(100) NOT NULL, " +
+                        "firstName VARCHAR(100) NOT NULL, " +
+                        "middleName VARCHAR(100), " +
+                        "driverLicense VARCHAR(50) UNIQUE NOT NULL, " +
+                        "vehicleLicense VARCHAR(50) NOT NULL, " +
+                        "insurancePolicy VARCHAR(50) NOT NULL, " +
+                        "experience INT NOT NULL CHECK (experience >= 0)" +
+                        ")",
+                TABLE_NAME
+        );
+
+        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(createTableSQL)) {
+            stmt.execute();
+            System.out.println("Таблица \"" + TABLE_NAME + "\" проверена/создана.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Ошибка при создании таблицы: " + TABLE_NAME);
+        }
+    }
+
+    // Методы для исправления повтора кода
+    // Заполнение PreparedStatement
+    private void fillDriverStatement(PreparedStatement stmt, Driver driver) throws SQLException {
+        stmt.setString(1, driver.getLastName());
+        stmt.setString(2, driver.getFirstName());
+        stmt.setString(3, driver.getMiddleName());
+        stmt.setString(4, driver.getDriverLicense());
+        stmt.setString(5, driver.getVehicleLicense());
+        stmt.setString(6, driver.getInsurancePolicy());
+        stmt.setInt(7, driver.getExperience());
+    }
+
+    // Запись результата в объект
+    private Driver mapDriver(ResultSet rs) throws SQLException {
+        return new Driver(
+            rs.getInt("id"),
+            rs.getString("lastName"),
+            rs.getString("firstName"),
+            rs.getString("middleName"),
+            rs.getString("driverLicense"),
+            rs.getString("vehicleLicense"),
+            rs.getString("insurancePolicy"),
+            rs.getInt("experience")
+        );
     }
 
     // Получение объекта по ID
@@ -24,16 +74,7 @@ public class DriverRepDB {
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                return new Driver(
-                        rs.getInt("id"),
-                        rs.getString("lastName"),
-                        rs.getString("firstName"),
-                        rs.getString("middleName"),
-                        rs.getString("driverLicense"),
-                        rs.getString("vehicleLicense"),
-                        rs.getString("insurancePolicy"),
-                        rs.getInt("experience")
-                );
+                return mapDriver(rs);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -50,16 +91,7 @@ public class DriverRepDB {
             stmt.setInt(2, n);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                drivers.add(new Driver(
-                        rs.getInt("id"),
-                        rs.getString("lastName"),
-                        rs.getString("firstName"),
-                        rs.getString("middleName"),
-                        rs.getString("driverLicense"),
-                        rs.getString("vehicleLicense"),
-                        rs.getString("insurancePolicy"),
-                        rs.getInt("experience")
-                ));
+                drivers.add(mapDriver(rs));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -69,16 +101,10 @@ public class DriverRepDB {
 
     // Добавление объекта с автоматическим назначением ID
     public void addDriver(Driver driver) {
+        createTableIfNotExists();
         String sql = "INSERT INTO " + TABLE_NAME + " (lastName, firstName, middleName, driverLicense, vehicleLicense, insurancePolicy, experience) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id";
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, driver.getLastName());
-            stmt.setString(2, driver.getFirstName());
-            stmt.setString(3, driver.getMiddleName());
-            stmt.setString(4, driver.getDriverLicense());
-            stmt.setString(5, driver.getVehicleLicense());
-            stmt.setString(6, driver.getInsurancePolicy());
-            stmt.setInt(7, driver.getExperience());
-
+            fillDriverStatement(stmt, driver);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
                 int generatedId = rs.getInt("id");
@@ -94,13 +120,7 @@ public class DriverRepDB {
     public void replaceDriverById(int id, Driver newDriver) {
         String sql = "UPDATE " + TABLE_NAME + " SET lastName = ?, firstName = ?, middleName = ?, driverLicense = ?, vehicleLicense = ?, insurancePolicy = ?, experience = ? WHERE id = ?";
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, newDriver.getLastName());
-            stmt.setString(2, newDriver.getFirstName());
-            stmt.setString(3, newDriver.getMiddleName());
-            stmt.setString(4, newDriver.getDriverLicense());
-            stmt.setString(5, newDriver.getVehicleLicense());
-            stmt.setString(6, newDriver.getInsurancePolicy());
-            stmt.setInt(7, newDriver.getExperience());
+            fillDriverStatement(stmt, newDriver);
             stmt.setInt(8, id);
             stmt.executeUpdate();
         } catch (SQLException e) {
