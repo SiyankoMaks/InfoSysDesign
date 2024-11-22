@@ -3,6 +3,6 @@ package Project;
 import java.util.List;
 
 public interface DriverStrategy {
-    void readAllValues(List<Driver> drivers); // Чтение
+    List<Driver> readAllValues(); // Чтение
     void writeAllValues(List<Driver> drivers); // Запись
 }

@@ -16,10 +16,11 @@ public abstract class DriverRep {
     }
 
     // Чтение
-    public void readAllValues() {
+    public List<Driver> readAllValues() {
         if (strategy != null) {
-            strategy.readAllValues(drivers);
+            return strategy.readAllValues();
         }
+        return new ArrayList<>();
     }
 
     // Запись

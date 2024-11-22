@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 public class DriverStrategyYAML implements DriverStrategy {
@@ -15,8 +16,8 @@ public class DriverStrategyYAML implements DriverStrategy {
     }
 
     @Override
-    public void readAllValues(List<Driver> drivers) {
-        drivers.clear();
+    public List<Driver> readAllValues() {
+        List<Driver> drivers = new ArrayList<>();
         try {
             String content = new String(Files.readAllBytes(Paths.get(yamlFilePath)));
             Yaml yaml = new Yaml();
@@ -29,6 +30,7 @@ public class DriverStrategyYAML implements DriverStrategy {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return drivers;
     }
 
     @Override
