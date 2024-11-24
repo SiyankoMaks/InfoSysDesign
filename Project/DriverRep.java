@@ -4,15 +4,20 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public abstract class DriverRep {
+public class DriverRep {
 
-    private final List<Driver> drivers = new ArrayList<>();
+    protected List<Driver> drivers = new ArrayList<>();
     private DriverStrategy strategy;
 
+    // Конструктор
+    public DriverRep(DriverStrategy strategy){
+        this.setStrategy(strategy);
+        this.drivers = readAllValues();
+    }
+    
     // Метод установки стратегии
     public void setStrategy(DriverStrategy strategy) {
         this.strategy = strategy;
-        readAllValues();
     }
 
     // Чтение

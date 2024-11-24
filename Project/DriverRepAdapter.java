@@ -8,7 +8,7 @@ public class DriverRepAdapter {
 
     // Конструктор
     public DriverRepAdapter(DriverStrategy strategy) {
-        this.driverRep = new DriverRep() {{setStrategy(strategy);}};
+        this.driverRep = new DriverRep(strategy);
     }
 
     // Методы
