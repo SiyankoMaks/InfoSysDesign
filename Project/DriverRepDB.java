@@ -5,40 +5,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DriverRepDB {
-    private final DBConnection dbConnection; // Делегация для БД
-    private final String TABLE_NAME = "drivers";
-
+    private DBConnection dbConnection; // Делегация для БД
+    private String TABLE_NAME = "drivers";
+    
     public DriverRepDB(DBConnection dbConnection) {
         this.dbConnection = dbConnection;
     }
 
     private Connection getConnection() throws SQLException {
         return dbConnection.getConnection(); // Делегация к DBConnection
-    }
-
-    // Метод для создания таблицы, если она не существует
-    private void createTableIfNotExists() {
-        String createTableSQL = String.format(
-                "CREATE TABLE IF NOT EXISTS %s (" +
-                        "id SERIAL PRIMARY KEY, " +
-                        "lastName VARCHAR(100) NOT NULL, " +
-                        "firstName VARCHAR(100) NOT NULL, " +
-                        "middleName VARCHAR(100), " +
-                        "driverLicense VARCHAR(50) UNIQUE NOT NULL, " +
-                        "vehicleLicense VARCHAR(50) NOT NULL, " +
-                        "insurancePolicy VARCHAR(50) NOT NULL, " +
-                        "experience INT NOT NULL CHECK (experience >= 0)" +
-                        ")",
-                TABLE_NAME
-        );
-
-        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(createTableSQL)) {
-            stmt.execute();
-            System.out.println("Таблица \"" + TABLE_NAME + "\" проверена/создана.");
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Ошибка при создании таблицы: " + TABLE_NAME);
-        }
     }
 
     // Методы для исправления повтора кода
@@ -101,7 +76,6 @@ public class DriverRepDB {
 
     // Добавление объекта с автоматическим назначением ID
     public void addDriver(Driver driver) {
-        createTableIfNotExists();
         String sql = "INSERT INTO " + TABLE_NAME + " (lastName, firstName, middleName, driverLicense, vehicleLicense, insurancePolicy, experience) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id";
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
             fillDriverStatement(stmt, driver);

@@ -47,9 +47,4 @@ public class DriverRepAdapter {
     public int getCount() {
         return driverRep.getCount();
     }
-
-    // Установка новой стратегии
-    public void setStrategy(DriverStrategy strategy) {
-        driverRep.setStrategy(strategy);
-    }
 }

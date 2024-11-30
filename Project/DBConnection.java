@@ -2,17 +2,20 @@ package Project;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class DBConnection {
     private static DBConnection instance; // ОДИН экземпляр класса
     private Connection connection;
 
-    private final String dbName;
-    private final String user;
-    private final String password;
-    private final String host;
-    private final String port;
+    private String TABLE_NAME = "drivers";
+
+    private String dbName;
+    private String user;
+    private String password;
+    private String host;
+    private String port;
 
     // Конструктор
     private DBConnection(String dbName, String user, String password, String host, String port) {
@@ -22,7 +25,34 @@ public class DBConnection {
         this.host = host;
         this.port = port;
         connect();
+        // Перенести создание таблицы createTableIfNotExists
+        createTableIfNotExists();
     }
+    // Метод для создания таблицы, если она не существует
+    private void createTableIfNotExists() {
+        String createTableSQL = String.format(
+                "CREATE TABLE IF NOT EXISTS %s (" +
+                        "id SERIAL PRIMARY KEY, " +
+                        "lastName VARCHAR(100) NOT NULL, " +
+                        "firstName VARCHAR(100) NOT NULL, " +
+                        "middleName VARCHAR(100), " +
+                        "driverLicense VARCHAR(50) UNIQUE NOT NULL, " +
+                        "vehicleLicense VARCHAR(50) NOT NULL, " +
+                        "insurancePolicy VARCHAR(50) NOT NULL, " +
+                        "experience INT NOT NULL CHECK (experience >= 0)" +
+                        ")",
+                TABLE_NAME
+        );
+
+        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(createTableSQL)) {
+            stmt.execute();
+            System.out.println("Таблица \"" + TABLE_NAME + "\" проверена/создана.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Ошибка при создании таблицы: " + TABLE_NAME);
+        }
+    }
+
 
     // Подключение к бд
     private void connect() {
