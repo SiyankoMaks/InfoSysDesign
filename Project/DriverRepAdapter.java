@@ -24,18 +24,16 @@ public class DriverRepAdapter {
     }
 
     // Добавление объекта
-    public void addDriver(Driver driver) {
+    public void addDriver(Driver driver) throws Exception {
         driverRep.addDriver(driver);
     }
 
     // Замена объекта по ID
-    public boolean replaceDriverById(int id, Driver newDriver) {
-        Driver existingDriver = driverRep.getObjectById(id);
-        if (existingDriver != null) {
+    public boolean replaceDriverById(int id, Driver newDriver) throws Exception {
+        try {
             driverRep.replaceDriverById(id, newDriver);
             return true;
-        }
-        return false;
+        } catch (Exception e) {return false;}
     }
 
     // Удаление объекта по ID

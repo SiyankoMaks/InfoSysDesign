@@ -20,7 +20,7 @@ public class DriverRepDBExample {
         );
 
         // Добавление водителя
-        driverRepDB.addDriver(newDriver);
+        //driverRepDB.addDriver(newDriver);
         System.out.println("Водитель добавлен: " + newDriver);
 
         // Получение водителя по ID

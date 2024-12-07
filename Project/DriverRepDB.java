@@ -42,6 +42,15 @@ public class DriverRepDB {
         );
     }
 
+    // Проверка данных на уникальность
+    private boolean isUnique(String driverLicense) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM " + TABLE_NAME + " WHERE driverLicense = ?";
+        try (Connection conn = dbConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, driverLicense);
+            ResultSet rs = stmt.executeQuery();
+            return rs.next() && rs.getInt(1) == 0; // Уникально, если результат = 0
+        }
+    }
     // Получение объекта по ID
     public Driver getObjectById(int id) {
         String sql = "SELECT * FROM " + TABLE_NAME + " WHERE id = ?";
@@ -75,7 +84,11 @@ public class DriverRepDB {
     }
 
     // Добавление объекта с автоматическим назначением ID
-    public void addDriver(Driver driver) {
+    public void addDriver(Driver driver) throws SQLException {
+        if (!isUnique(driver.getDriverLicense())) {
+            throw new SQLException("Клиент с таким водительским удостоверением уже существует!");
+        }
+
         String sql = "INSERT INTO " + TABLE_NAME + " (lastName, firstName, middleName, driverLicense, vehicleLicense, insurancePolicy, experience) VALUES (?, ?, ?, ?, ?, ?, ?) RETURNING id";
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
             fillDriverStatement(stmt, driver);
@@ -91,7 +104,11 @@ public class DriverRepDB {
     }
 
     // Замена элемента по ID
-    public void replaceDriverById(int id, Driver newDriver) {
+    public void replaceDriverById(int id, Driver newDriver) throws SQLException {
+        if (!isUnique(newDriver.getDriverLicense())) {
+            throw new SQLException("Нельзя заменить водителя: водитель с таким водительским удостоверением уже существует!");
+        }
+
         String sql = "UPDATE " + TABLE_NAME + " SET lastName = ?, firstName = ?, middleName = ?, driverLicense = ?, vehicleLicense = ?, insurancePolicy = ?, experience = ? WHERE id = ?";
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
             fillDriverStatement(stmt, newDriver);
