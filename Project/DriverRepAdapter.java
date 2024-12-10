@@ -8,7 +8,7 @@ public class DriverRepAdapter {
 
     // Конструктор
     public DriverRepAdapter(DriverStrategy strategy) {
-        this.driverRep = new DriverRep(strategy);
+        this.driverRep = new DriverRep(strategy); // Создание нового экземпляра класса полного
     }
 
     // Методы
@@ -19,19 +19,21 @@ public class DriverRepAdapter {
     }
 
     // Получение списка k по счету n объектов
-    public List<Driver> getKthNList(int k, int n) {
+    public List<DriverShort> getKthNList(int k, int n) {
         return driverRep.getKthNList(k, n);
     }
 
     // Добавление объекта
     public void addDriver(Driver driver) throws Exception {
         driverRep.addDriver(driver);
+        driverRep.writeAllValues();
     }
 
     // Замена объекта по ID
     public boolean replaceDriverById(int id, Driver newDriver) throws Exception {
         try {
             driverRep.replaceDriverById(id, newDriver);
+            driverRep.writeAllValues();
             return true;
         } catch (Exception e) {return false;}
     }

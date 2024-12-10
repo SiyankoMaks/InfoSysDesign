@@ -41,6 +41,15 @@ public class DriverRepDB {
             rs.getInt("experience")
         );
     }
+    private DriverShort mapDriverShort(ResultSet rs) throws SQLException {
+        return new DriverShort(
+            rs.getInt("id"),
+            rs.getString("lastName"),
+            rs.getString("firstName"),
+            rs.getString("middleName"),
+            rs.getString("driverLicense")
+        );
+    }
 
     // Проверка данных на уникальность
     private boolean isUnique(String driverLicense) throws SQLException {
@@ -67,20 +76,25 @@ public class DriverRepDB {
     }
 
     // Получение списка k по счету n объектов
-    public List<Driver> getKthNList(int k, int n) {
-        List<Driver> drivers = new ArrayList<>();
-        String sql = "SELECT * FROM " + TABLE_NAME + " ORDER BY lastName OFFSET ? LIMIT ?";
+    public List<DriverShort> getKthNList(int k, int n) {
+        List<DriverShort> driversShort = new ArrayList<>();
+        String sql = "SELECT id, lastName, firstName, middleName, driverLicense " +
+                     "FROM " + TABLE_NAME + " " +
+                     "ORDER BY lastName OFFSET ? LIMIT ?";
+    
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, (k - 1) * n);
             stmt.setInt(2, n);
             ResultSet rs = stmt.executeQuery();
+    
             while (rs.next()) {
-                drivers.add(mapDriver(rs));
+                driversShort.add(mapDriverShort(rs));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return drivers;
+    
+        return driversShort;
     }
 
     // Добавление объекта с автоматическим назначением ID

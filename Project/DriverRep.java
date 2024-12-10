@@ -3,15 +3,16 @@ package Project;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class DriverRep {
 
     protected List<Driver> drivers = new ArrayList<>();
-    private DriverStrategy strategy;
+    private DriverStrategy strategy; // Создание поля
 
     // Конструктор
     public DriverRep(DriverStrategy strategy){
-        this.setStrategy(strategy);
+        this.setStrategy(strategy); // Присваивание
         this.drivers = readAllValues();
     }
     
@@ -46,10 +47,18 @@ public class DriverRep {
     }
 
     // Метод получения списка k по счету n объектов класса Driver
-    public List<Driver> getKthNList(int k, int n) {
+    public List<DriverShort> getKthNList(int k, int n) {
         int start = (k - 1) * n;
         int end = Math.min(start + n, drivers.size());
-        return drivers.subList(start, end);
+        return drivers.subList(start, end).stream()
+                     .map(driver -> new DriverShort(
+                             driver.getId(),
+                             driver.getLastName(),
+                             driver.getFirstName(),
+                             driver.getMiddleName(),
+                             driver.getDriverLicense()
+                     ))
+                     .collect(Collectors.toList());
     }
 
     // Метод сортировки элементов по фамилии
@@ -75,7 +84,6 @@ public class DriverRep {
             throw new Exception("Водитель с таким водительским удостоверением уже существует!");
         }
         drivers.add(driver);
-        writeAllValues();
     }
 
     // Метод замены элемента списка по ID
@@ -86,7 +94,6 @@ public class DriverRep {
                     throw new Exception("Нельзя заменить водителя: водитель с таким водительским удостоверением уже существует!");
                 }
                 drivers.set(i, newDriver);
-                writeAllValues();
                 break;
             }
         }
