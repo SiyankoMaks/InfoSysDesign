@@ -67,20 +67,15 @@ public class DriverRep {
     }
 
     // Метод проверки данных на уникальность
-    private boolean isUnique(String driverLicense) {
-        for (Driver driver : drivers) {
-            if (driver.getDriverLicense().equals(driverLicense)) {
-                return false;
-            }
-        }
-        return true;
-    }
+    private boolean isUnique(Driver driver) {
+        return drivers.stream().noneMatch(existingDriver -> existingDriver.equals(driver));
+    }    
 
     // Метод добавления объекта в список с автоматическим назначением ID
     public void addDriver(Driver driver) throws Exception {
         int newId = drivers.stream().mapToInt(Driver::getId).max().orElse(0) + 1;
         driver.setId(newId);
-        if (!isUnique(driver.getDriverLicense())) {
+        if (!isUnique(driver)) {
             throw new Exception("Водитель с таким водительским удостоверением уже существует!");
         }
         drivers.add(driver);
@@ -90,7 +85,7 @@ public class DriverRep {
     public void replaceDriverById(int id, Driver newDriver) throws Exception {
         for (int i = 0; i < drivers.size(); i++) {
             if (drivers.get(i).getId() == id) {
-                if (!isUnique(newDriver.getDriverLicense())) {
+                if (!isUnique(newDriver)) {
                     throw new Exception("Нельзя заменить водителя: водитель с таким водительским удостоверением уже существует!");
                 }
                 drivers.set(i, newDriver);
@@ -102,7 +97,6 @@ public class DriverRep {
     // Метод удаления элемента списка по ID
     public void deleteDriverById(int id) {
         drivers.removeIf(driver -> driver.getId() == id);
-        writeAllValues();
     }
 
     // Метод получения количества элементов

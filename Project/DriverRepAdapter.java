@@ -41,6 +41,7 @@ public class DriverRepAdapter {
     // Удаление объекта по ID
     public void deleteDriverById(int id) {
         driverRep.deleteDriverById(id);
+        driverRep.writeAllValues();
     }
 
     // Получение количества объектов
