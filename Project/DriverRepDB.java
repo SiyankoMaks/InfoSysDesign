@@ -4,9 +4,10 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DriverRepDB {
+public class DriverRepDB implements IDriverRep{
     private DBConnection dbConnection; // Делегация для БД
     private String TABLE_NAME = "drivers";
+    private List<DriverObserver> observers = new ArrayList<>();
     
     public DriverRepDB(DBConnection dbConnection) {
         this.dbConnection = dbConnection;
@@ -54,12 +55,13 @@ public class DriverRepDB {
     // Проверка данных на уникальность
     private boolean isUnique(String driverLicense) throws SQLException {
         String sql = "SELECT COUNT(*) FROM " + TABLE_NAME + " WHERE driverLicense = ?";
-        try (Connection conn = dbConnection.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, driverLicense);
             ResultSet rs = stmt.executeQuery();
             return rs.next() && rs.getInt(1) == 0; // Уникально, если результат = 0
         }
     }
+
     // Получение объекта по ID
     public Driver getObjectById(int id) {
         String sql = "SELECT * FROM " + TABLE_NAME + " WHERE id = ?";
@@ -118,19 +120,21 @@ public class DriverRepDB {
     }
 
     // Замена элемента по ID
-    public void replaceDriverById(int id, Driver newDriver) throws SQLException {
+    public boolean replaceDriverById(int id, Driver newDriver) throws SQLException {
         if (!isUnique(newDriver.getDriverLicense())) {
             throw new SQLException("Нельзя заменить водителя: водитель с таким водительским удостоверением уже существует!");
         }
-
+    
         String sql = "UPDATE " + TABLE_NAME + " SET lastName = ?, firstName = ?, middleName = ?, driverLicense = ?, vehicleLicense = ?, insurancePolicy = ?, experience = ? WHERE id = ?";
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
             fillDriverStatement(stmt, newDriver);
             stmt.setInt(8, id);
             stmt.executeUpdate();
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return false;
     }
 
     // Удаление элемента по ID
@@ -156,5 +160,43 @@ public class DriverRepDB {
             e.printStackTrace();
         }
         return 0;
+    }
+
+    @Override
+    public void addObserver(DriverObserver observer) {
+        if (!observers.contains(observer)) {
+            observers.add(observer);
+        }
+    }
+
+    @Override
+    public void removeObserver(DriverObserver observer) {
+        observers.remove(observer);
+    }
+
+    @Override
+    public void notifyObservers() {
+        List<DriverShort> driverShortList = getKthNList(1, getCount());
+        List<Driver> driverList = new ArrayList<>();
+    
+        // Преобразуем каждый элемент DriverShort в Driver
+        for (DriverShort driverShort : driverShortList) {
+            // Создаем новый объект Driver, используя данные из DriverShort
+            Driver driver = new Driver(
+                driverShort.getLastName(),
+                driverShort.getFirstName(),
+                driverShort.getMiddleName(),
+                driverShort.getDriverLicense(),
+                "",
+                "",
+                0
+            );
+            driverList.add(driver);
+        }
+    
+        // Передаем преобразованный список в наблюдателей
+        for (DriverObserver observer : observers) {
+            observer.update(driverList);
+        }
     }
 }

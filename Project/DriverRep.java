@@ -82,16 +82,17 @@ public class DriverRep {
     }
 
     // Метод замены элемента списка по ID
-    public void replaceDriverById(int id, Driver newDriver) throws Exception {
+    public boolean replaceDriverById(int id, Driver newDriver) throws Exception {
         for (int i = 0; i < drivers.size(); i++) {
             if (drivers.get(i).getId() == id) {
                 if (!isUnique(newDriver)) {
                     throw new Exception("Нельзя заменить водителя: водитель с таким водительским удостоверением уже существует!");
                 }
                 drivers.set(i, newDriver);
-                break;
+                return true;
             }
         }
+        return false;
     }
 
     // Метод удаления элемента списка по ID
