@@ -3,10 +3,10 @@ package Project;
 import java.util.List;
 
 public class DriverModel extends DriverObservable {
-    private final DriverRepAdapter driverRep;
+    private IDriverModel driverRep;
 
     // Конструктор
-    public DriverModel(DriverRepAdapter driverRep) {
+    public DriverModel(IDriverModel driverRep) {
         this.driverRep = driverRep;
     }
 

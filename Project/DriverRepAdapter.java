@@ -2,7 +2,7 @@ package Project;
 
 import java.util.List;
 
-public class DriverRepAdapter{
+public class DriverRepAdapter implements IDriverModel{
 
     private DriverRep driverRep;
 

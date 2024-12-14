@@ -4,7 +4,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DriverRepDB{
+public class DriverRepDB implements IDriverModel{
     private DBConnection dbConnection; // Делегация для БД
     private String TABLE_NAME = "drivers";
     
