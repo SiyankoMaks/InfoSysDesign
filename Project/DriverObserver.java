@@ -1,7 +1,6 @@
 package Project;
 
-import java.util.List;
-
+// Интерфейс для наблюдателей
 public interface DriverObserver {
-    void update(List<Driver> drivers);
+    void update(String action, Object data);
 }
