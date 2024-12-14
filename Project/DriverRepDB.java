@@ -4,10 +4,9 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DriverRepDB implements IDriverRep{
+public class DriverRepDB{
     private DBConnection dbConnection; // Делегация для БД
     private String TABLE_NAME = "drivers";
-    private List<DriverObserver> observers = new ArrayList<>();
     
     public DriverRepDB(DBConnection dbConnection) {
         this.dbConnection = dbConnection;
@@ -160,43 +159,5 @@ public class DriverRepDB implements IDriverRep{
             e.printStackTrace();
         }
         return 0;
-    }
-
-    @Override
-    public void addObserver(DriverObserver observer) {
-        if (!observers.contains(observer)) {
-            observers.add(observer);
-        }
-    }
-
-    @Override
-    public void removeObserver(DriverObserver observer) {
-        observers.remove(observer);
-    }
-
-    @Override
-    public void notifyObservers() {
-        List<DriverShort> driverShortList = getKthNList(1, getCount());
-        List<Driver> driverList = new ArrayList<>();
-    
-        // Преобразуем каждый элемент DriverShort в Driver
-        for (DriverShort driverShort : driverShortList) {
-            // Создаем новый объект Driver, используя данные из DriverShort
-            Driver driver = new Driver(
-                driverShort.getLastName(),
-                driverShort.getFirstName(),
-                driverShort.getMiddleName(),
-                driverShort.getDriverLicense(),
-                "",
-                "",
-                0
-            );
-            driverList.add(driver);
-        }
-    
-        // Передаем преобразованный список в наблюдателей
-        for (DriverObserver observer : observers) {
-            observer.update(driverList);
-        }
     }
 }

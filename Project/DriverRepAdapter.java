@@ -1,12 +1,10 @@
 package Project;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class DriverRepAdapter implements IDriverRep {
+public class DriverRepAdapter{
 
     private DriverRep driverRep;
-    private List<DriverObserver> observers = new ArrayList<>();
 
     // Конструктор
     public DriverRepAdapter(DriverStrategy strategy) {
@@ -49,24 +47,5 @@ public class DriverRepAdapter implements IDriverRep {
     // Получение количества объектов
     public int getCount() {
         return driverRep.getCount();
-    }
-
-    @Override
-    public void addObserver(DriverObserver observer) {
-        if (!observers.contains(observer)) {
-            observers.add(observer);
-        }
-    }
-
-    @Override
-    public void removeObserver(DriverObserver observer) {
-        observers.remove(observer);
-    }
-
-    @Override
-    public void notifyObservers() {
-        for (DriverObserver observer : observers) {
-            observer.update(driverRep.readAllValues());
-        }
     }
 }
