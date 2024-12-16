@@ -21,7 +21,7 @@ public class MainView extends JFrame {
         setLayout(new BorderLayout());
 
         // Таблица для отображения водителей
-        tableModel = new DefaultTableModel(new String[]{"№", "Фамилия", "Имя", "Отчество", "ПТС", "Страховка"}, 0);
+        tableModel = new DefaultTableModel(new String[]{"№", "Фамилия", "Имя", "Отчество", "Водительское удостоверение"}, 0);
         driverTable = new JTable(tableModel);
         add(new JScrollPane(driverTable), BorderLayout.CENTER);
 
@@ -33,7 +33,7 @@ public class MainView extends JFrame {
         addButton.addActionListener(e -> openAddDriverWindow());
         buttonPanel.add(addButton);
 
-        JButton updateButton = new JButton("Скорректировать");
+        JButton updateButton = new JButton("Редактировать");
         updateButton.addActionListener(e -> viewDriverDetails());
         buttonPanel.add(updateButton);
 
@@ -75,8 +75,6 @@ public class MainView extends JFrame {
                 driver.getFirstName(),
                 driver.getMiddleName(),
                 driver.getDriverLicense()
-                // driver.getVehicleLicense(),
-                // driver.getInsurancePolicy()
             });
         }
     }

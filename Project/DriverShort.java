@@ -23,7 +23,7 @@ public class DriverShort {
     }
 
     // Геттеры и сеттеры с проверками
-    public int getId() { return id; }
+    public Integer getId() { return id; }
     public String getLastName() { return lastName; }
     public String getFirstName() { return firstName; }
     public String getMiddleName() { return middleName; }

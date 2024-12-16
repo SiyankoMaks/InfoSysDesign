@@ -27,6 +27,7 @@ public class Driver extends DriverShort {
                   String driverLicense, String vehicleLicense,
                   String insurancePolicy, int experience) {
         this(lastName, firstName, middleName, driverLicense, vehicleLicense, insurancePolicy, experience);
+        setId(id);
         setVehicleLicense(vehicleLicense);
         setInsurancePolicy(insurancePolicy);
         setExperience(experience);

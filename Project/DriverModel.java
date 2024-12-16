@@ -12,8 +12,7 @@ public class DriverModel extends DriverObservable {
 
     // Получение списка водителей для отображения на странице
     public List<DriverShort> getDrivers(int pageSize, int pageNum) {
-        int offset = (pageNum - 1) * pageSize;
-        return driverRep.getKthNList(pageSize, offset);
+        return driverRep.getKthNList(pageNum, pageSize);
     }
 
     // Получение водителя по ID

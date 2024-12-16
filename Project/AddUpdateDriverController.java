@@ -14,16 +14,16 @@ public class AddUpdateDriverController {
         StringBuilder errors = new StringBuilder();
 
         if (!DriverShort.validateLastName(lastName)) {
-            errors.append("Фамилия не может быть пустой или некорректной.\n");
+            errors.append("Фамилия должна содержать только русские буквы.\n");
         }
         if (!DriverShort.validateName(firstName)) {
-            errors.append("Имя не может быть пустым или некорректным.\n");
+            errors.append("Имя должно содержать только русские буквы.\n");
         }
         if (!DriverShort.validateName(middleName)) {
-            errors.append("Отчество не может быть пустым или некорректным.\n");
+            errors.append("Отчество должно содержать только русские буквы.\n");
         }
         if (!DriverShort.validateDriverLicense(driverLicense)) {
-            errors.append("Некорректный номер водительского удостоверения.\n");
+            errors.append("Водительское удостоверение должно содержать 10 цифр.\n");
         }
         if (!Driver.validateVehicleLicense(vehicleLicense)) {
             errors.append("ПТС должен иметь формат: 2 цифры, 2 буквы, 6 цифр.\n");

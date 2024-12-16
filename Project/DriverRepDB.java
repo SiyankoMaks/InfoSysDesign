@@ -76,7 +76,6 @@ public class DriverRepDB implements IDriverModel{
         return null;
     }
 
-    // Получение списка k по счету n объектов
     public List<DriverShort> getKthNList(int k, int n) {
         List<DriverShort> driversShort = new ArrayList<>();
         String sql = "SELECT id, lastName, firstName, middleName, driverLicense " +
@@ -84,10 +83,9 @@ public class DriverRepDB implements IDriverModel{
                      "ORDER BY lastName OFFSET ? LIMIT ?";
     
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, (k - 1) * n);
-            stmt.setInt(2, n);
+            stmt.setInt(1, (k - 1) * n); // Смещение
+            stmt.setInt(2, n);           // Лимит
             ResultSet rs = stmt.executeQuery();
-    
             while (rs.next()) {
                 driversShort.add(mapDriverShort(rs));
             }

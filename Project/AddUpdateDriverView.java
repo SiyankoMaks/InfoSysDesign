@@ -91,16 +91,18 @@ public class AddUpdateDriverView extends JFrame {
             String vehicleLicense = vehicleLicenseField.getText().trim();
             String insurancePolicy = insurancePolicyField.getText().trim();
             int experience = Integer.parseInt(experienceField.getText().trim());
-
             // Вызов определенного метода контроллера
             if (action.equals("add")) {
                 controller.addDriver(lastName, firstName, middleName, driverLicense, vehicleLicense, insurancePolicy, experience);
                 JOptionPane.showMessageDialog(this, "Водитель успешно добавлен!", "Успех", JOptionPane.INFORMATION_MESSAGE);
             } else if (action.equals("update")) {
+                if (driverData.getId() == null) {
+                    JOptionPane.showMessageDialog(this, "Ошибка: ID водителя отсутствует.", "Ошибка", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
                 controller.updateDriver(driverData.getId(), lastName, firstName, middleName, driverLicense, vehicleLicense, insurancePolicy, experience);
                 JOptionPane.showMessageDialog(this, "Данные водителя успешно обновлены!", "Успех", JOptionPane.INFORMATION_MESSAGE);
             }
-
             dispose();
 
         } catch (IllegalArgumentException e) {
