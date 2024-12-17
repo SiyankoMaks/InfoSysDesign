@@ -5,12 +5,12 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.List;
 
-public class MainView extends JFrame {
+public class MainView extends JFrame implements DriverObserver {
     private MainController controller;
     private JTable driverTable;
     private DefaultTableModel tableModel;
     private int currentPage = 1;
-    private int pageSize = 10;
+    private int pageSize = 5;
 
     public MainView(MainController controller) {
         this.controller = controller;
@@ -49,9 +49,20 @@ public class MainView extends JFrame {
         nextButton.addActionListener(e -> nextPage());
         buttonPanel.add(nextButton);
 
+        // Регистрация MainView как наблюдателя
+        controller.getModel().addObserver(this);
+
         // Загрузка данных в таблицу
         refreshTable();
         setVisible(true);
+    }
+
+    // Метод обновления таблицы
+    @Override
+    public void update(String action, Object data) {
+        if ("add".equals(action) || "update".equals(action) || "delete".equals(action)) {
+            refreshTable();
+        }
     }
 
     private void refreshTable() {
@@ -81,7 +92,7 @@ public class MainView extends JFrame {
 
     // Окно добавления водителя
     private void openAddDriverWindow() {
-        SwingUtilities.invokeLater(() -> new AddUpdateDriverView(new AddUpdateDriverController(controller.getModel()), "add", null));
+        SwingUtilities.invokeLater(() -> new AddUpdateDriverView(new AddDriverController(controller.getModel()), "Добавить", null));
     }
 
     // Получение выбранного водителя
@@ -96,7 +107,7 @@ public class MainView extends JFrame {
         Driver driver = controller.getDriverById(driverId);
 
         if (driver != null) {
-            SwingUtilities.invokeLater(() -> new AddUpdateDriverView(new AddUpdateDriverController(controller.getModel()), "update", driver));
+            SwingUtilities.invokeLater(() -> new AddUpdateDriverView(new UpdateDriverController(controller.getModel(), driverId), "Редактировать", driver));
         } else {
             JOptionPane.showMessageDialog(this, "Не удалось найти водителя", "Ошибка", JOptionPane.WARNING_MESSAGE);
         }
