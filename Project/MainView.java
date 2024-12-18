@@ -21,7 +21,12 @@ public class MainView extends JFrame implements DriverObserver {
         setLayout(new BorderLayout());
 
         // Таблица для отображения водителей
-        tableModel = new DefaultTableModel(new String[]{"№", "Фамилия", "Имя", "Отчество", "Водительское удостоверение"}, 0);
+        tableModel = new DefaultTableModel(new String[]{"№", "Фамилия", "Имя", "Отчество", "Водительское удостоверение"}, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
         driverTable = new JTable(tableModel);
         add(new JScrollPane(driverTable), BorderLayout.CENTER);
 

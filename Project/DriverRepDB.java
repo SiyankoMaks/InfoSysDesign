@@ -52,13 +52,17 @@ public class DriverRepDB implements IDriverModel{
     }
 
     // Проверка данных на уникальность
-    private boolean isUnique(String driverLicense) throws SQLException {
-        String sql = "SELECT COUNT(*) FROM " + TABLE_NAME + " WHERE driverLicense = ?";
+    private boolean isUnique(String driverLicense, int excludeId) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM " + TABLE_NAME + " WHERE driverLicense = ? AND id != ?";
         try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, driverLicense);
+            stmt.setInt(2, excludeId);
             ResultSet rs = stmt.executeQuery();
-            return rs.next() && rs.getInt(1) == 0; // Уникально, если результат = 0
+            if (rs.next()) {
+                return rs.getInt(1) == 0; // Нет записей
+            }
         }
+        return false;
     }
 
     // Получение объекта по ID
@@ -98,7 +102,7 @@ public class DriverRepDB implements IDriverModel{
 
     // Добавление объекта с автоматическим назначением ID
     public void addDriver(Driver driver) throws SQLException {
-        if (!isUnique(driver.getDriverLicense())) {
+        if (!isUnique(driver.getDriverLicense(), -1)) {
             throw new SQLException("Клиент с таким водительским удостоверением уже существует!");
         }
 
@@ -118,7 +122,7 @@ public class DriverRepDB implements IDriverModel{
 
     // Замена элемента по ID
     public boolean replaceDriverById(int id, Driver newDriver) throws SQLException {
-        if (!isUnique(newDriver.getDriverLicense())) {
+        if (!isUnique(newDriver.getDriverLicense(), id)) {
             throw new SQLException("Нельзя заменить водителя: водитель с таким водительским удостоверением уже существует!");
         }
     

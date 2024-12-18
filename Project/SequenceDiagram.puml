@@ -1,0 +1,115 @@
+
+@startuml SequenceDiagram
+actor User
+participant ":MainView" as MV
+participant "controller: MainController" as MC
+participant "model: DriverModel" as DM
+participant "repository: DriverRepDB" as DRD
+participant ":AddUpdateDriverView" as ADV
+participant "controller: AddDriverController" as ADC
+participant "controller: UpdateClientController" as UDC
+participant ":DBConnecrion" as DC
+
+
+== Инициализация главного окна ==
+User -> DC: getInstance(dbUrl, dbUser, dbPassword, host, port): dbConnection
+DC --> User: Возврат подключения к бд dbConnection
+User -> DRD: new DriverRepDB(dbConnection): DriverRepDB
+DRD --> User: Возврат объекта DriverRepDB
+User -> DM: new DriverModel(repository): DriverModel
+User -> MC: new MainController(model): MainController
+User -> MV: new MainView(controller)
+MV -> DM: getModel().addObserver(this)
+MV -> MV: refresh_table()
+MV -> MC: getDrivers(pageSize, currentPage)
+MC -> DM: getDrivers(pageSize, pageNum)
+DM -> DRD: getKthNList(pageNum, pageSize)
+DRD --> DM: Возвращение списка водителей (List)
+DM --> MC: Возвращение списка водителей (List)
+MC --> MV: Возвращение списка водителей (List)
+
+== Добавление нового водителя ==
+User -> MV: Нажате кнопки "Добавить водителя"
+MV -> MV: openAddDriverWindow()
+MV -> ADV: new AddUpdateDriverView(...)
+MV -> ADC: new AddDriverController(...)
+User -> ADV: Ввод данных водителя
+User -> ADV: Нажатие кнопки "Добавить"
+ADV -> ADV: handleAction()
+ADV -> ADC: handle(...)
+ADC -> ADC: validateData(...)
+ADC -> DM: addDriver(...)
+DM -> DRD: addDriver(newDriver)
+DM -> MV: notifyObserves("add", newDriver)
+MV -> MV: refresh_table()
+MV -> MC: getDrivers(pageSize, currentPage)
+MC -> DM: getDrivers(pageSize, pageNum)
+DM -> DRD: getKthNList(pageNum, pageSize)
+DRD --> DM: Возвращение списка водителей (List)
+DM --> MC: Возвращение списка водителей (List)
+MC --> MV: Возвращение списка водителей (List)
+ADV --> ADV: Успех
+ADV --> MV: Закрытие окна
+
+== Обновление данных водителя ==
+User -> MV: Нажатие кнопки "Редактировать"
+MV -> MV: viewDriverDetails()
+MV -> ADV: new AddUpdateDriverView(...)
+MV -> UDC: new UpdateDriverController(...)
+User -> ADV: Изменение данных водителя
+User -> ADV: Нажатие кнопки "Добавить"
+ADV -> ADV: handleAction()
+ADV -> UDC: handle(...)
+UDC -> UDC: validateData(...)
+UDC -> DM: updateDriver(...)
+DM -> DRD: replaceDriverById(...)
+DM -> MV: notifyObserves("update", updateDriver)
+MV -> MV: refresh_table()
+MV -> MC: getDrivers(pageSize, currentPage)
+MC -> DM: getDrivers(pageSize, pageNum)
+DM -> DRD: getKthNList(pageNum, pageSize)
+DRD --> DM: Возвращение списка водителей (List)
+DM --> MC: Возвращение списка водителей (List)
+MC --> MV: Возвращение списка водителей (List)
+ADV --> ADV: Успех
+ADV --> MV: Закрытие окна
+
+== Удаление водителя ==
+User -> MV: Нажатие кнопки "Удалить водителя"
+MV -> MV: deleteDriver()
+MV -> MC: deleteDriver(int driverId)
+MC -> DM: deleteDriver(int driverId)
+DM -> DRD: deleteDriverById(driverId)
+DM -> MV: notifyObservers("delete", driverId)
+MV -> MV: refresh_table()
+MV -> MC: getDrivers(pageSize, currentPage)
+MC -> DM: getDrivers(pageSize, pageNum)
+DM -> DRD: getKthNList(pageNum, pageSize)
+DRD --> DM: Возвращение списка водителей (List)
+DM --> MC: Возвращение списка водителей (List)
+MC --> MV: Возвращение списка водителей (List)
+MV --> MV: УСПЕХ 
+
+== Следующий ==
+User -> MV: Нажиматие кнопки "Следующий"
+MV -> MV: nextPage()
+MV -> MV: refresh_table()
+MV -> MC: getDrivers(pageSize, currentPage)
+MC -> DM: getDrivers(pageSize, pageNum)
+DM -> DRD: getKthNList(pageNum, pageSize)
+DRD --> DM: Возвращение списка водителей (List)
+DM --> MC: Возвращение списка водителей (List)
+MC --> MV: Возвращение списка водителей (List)
+
+== Предыдущий ==
+User -> MV: Нажиматие кнопки "Предыдущий"
+MV -> MV: prevPage()
+MV -> MV: refresh_table()
+MV -> MC: getDrivers(pageSize, currentPage)
+MC -> DM: getDrivers(pageSize, pageNum)
+DM -> DRD: getKthNList(pageNum, pageSize)
+DRD --> DM: Возвращение списка водителей (List)
+DM --> MC: Возвращение списка водителей (List)
+MC --> MV: Возвращение списка водителей (List)
+
+@enduml
